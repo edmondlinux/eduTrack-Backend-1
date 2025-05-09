@@ -13,7 +13,12 @@ const complainCreate = async (req, res) => {
 
 const complainList = async (req, res) => {
     try {
-        let complains = await Complain.find({ school: req.params.id }).populate("user", "name");
+        let complains = await Complain.find({ school: req.params.id })
+            .populate({
+                path: 'user',
+                select: 'name rollNum',
+                model: 'Student'
+            });
         if (complains.length > 0) {
             res.send(complains)
         } else {
