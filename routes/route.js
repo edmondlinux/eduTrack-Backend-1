@@ -100,6 +100,21 @@ router.get('/Parent/:parentId', getParentDetail);
 router.put('/Parent/:parentId', updateParent);
 router.delete('/Parent/:parentId', deleteParent);
 router.get('/students/parent/:parentId', getParentStudents);
+router.get('/attendance/student/:studentId', async (req, res) => {
+    try {
+        const student = await Student.findById(req.params.studentId)
+            .populate('attendance.subName', 'subName')
+            .select('attendance name rollNum');
+        
+        if (!student) {
+            return res.status(404).json({ message: "Student not found" });
+        }
+        
+        res.json(student);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
 
 // Sclass
 
