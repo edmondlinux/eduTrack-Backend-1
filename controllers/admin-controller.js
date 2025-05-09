@@ -134,7 +134,7 @@ const updateAdmin = async (req, res) => {
     try {
         if (req.body.password) {
             const salt = await bcrypt.genSalt(10)
-            res.body.password = await bcrypt.hash(res.body.password, salt)
+            req.body.password = await bcrypt.hash(req.body.password, salt)
         }
         let result = await Admin.findByIdAndUpdate(req.params.id,
             { $set: req.body },
