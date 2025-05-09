@@ -6,7 +6,8 @@ const complainCreate = async (req, res) => {
         const result = await complain.save()
         res.send(result)
     } catch (err) {
-        res.status(500).json(err);
+        console.error(err);
+        res.status(500).json({ message: err.message });
     }
 };
 
@@ -19,7 +20,8 @@ const complainList = async (req, res) => {
             res.send({ message: "No complains found" });
         }
     } catch (err) {
-        res.status(500).json(err);
+        console.error(err);
+        res.status(500).json({ message: err.message });
     }
 };
 
