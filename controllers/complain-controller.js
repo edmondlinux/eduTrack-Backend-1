@@ -2,6 +2,13 @@ const Complain = require('../models/complainSchema.js');
 
 const complainCreate = async (req, res) => {
     try {
+        const Student = require('../models/studentSchema');
+        // Verify user exists before creating complaint
+        const student = await Student.findById(req.body.user);
+        if (!student) {
+            return res.status(400).json({ message: "Student not found" });
+        }
+        
         const complain = new Complain(req.body)
         const result = await complain.save()
         res.send(result)
