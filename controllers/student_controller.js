@@ -86,8 +86,8 @@ const getStudentDetail = async (req, res) => {
         else {
             res.send({ message: "No student found" });
         }
-    } catch (error) {
-        res.status(500).json({ message: error.message || "An error occurred while fetching student details" });
+    } catch (err) {
+        res.status(500).json(err);
     }
 }
 
