@@ -1,9 +1,15 @@
+
 const mongoose = require('mongoose');
 
 const complainSchema = new mongoose.Schema({
+    userType: {
+        type: String,
+        enum: ['Student', 'Teacher', 'Parent'],
+        required: true
+    },
     user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Student',
+        refPath: 'userType',
         required: true
     },
     date: {

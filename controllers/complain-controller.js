@@ -1,12 +1,28 @@
+
 const Complain = require('../models/complainSchema.js');
 
 const complainCreate = async (req, res) => {
     try {
-        const Student = require('../models/studentSchema');
-        // Verify user exists before creating complaint
-        const student = await Student.findById(req.body.user);
-        if (!student) {
-            return res.status(400).json({ message: "Student not found" });
+        const { userType, user } = req.body;
+        let UserModel;
+        
+        switch(userType) {
+            case 'Student':
+                UserModel = require('../models/studentSchema');
+                break;
+            case 'Teacher':
+                UserModel = require('../models/teacherSchema');
+                break;
+            case 'Parent':
+                UserModel = require('../models/parentSchema');
+                break;
+            default:
+                return res.status(400).json({ message: "Invalid user type" });
+        }
+
+        const userExists = await UserModel.findById(user);
+        if (!userExists) {
+            return res.status(400).json({ message: `${userType} not found` });
         }
         
         const complain = new Complain(req.body)
@@ -23,12 +39,12 @@ const complainList = async (req, res) => {
         let complains = await Complain.find({ school: req.params.id })
             .populate({
                 path: 'user',
-                model: 'Student',
-                select: 'name rollNum'
+                refPath: 'userType',
+                select: 'name email rollNum'
             })
             .lean();
         
-        console.log('Raw complains:', complains); // Debug log
+        console.log('Raw complains:', complains);
         
         if (complains.length > 0) {
             res.send(complains)
