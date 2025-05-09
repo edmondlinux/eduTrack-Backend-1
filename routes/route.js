@@ -6,6 +6,7 @@ const { adminRegister, adminLogIn, getAdminDetail, updateAdmin } = require('../c
 
 const { sclassCreate, sclassList, deleteSclass, deleteSclasses, getSclassDetail, getSclassStudents } = require('../controllers/class-controller.js');
 const { complainCreate, complainList } = require('../controllers/complain-controller.js');
+const { parentRegister, parentLogin, getParents, getParentDetail, updateParent, deleteParent, getParentStudents } = require('../controllers/parent-controller.js');
 const { noticeCreate, noticeList, deleteNotices, deleteNotice, updateNotice } = require('../controllers/notice-controller.js');
 const {
     studentRegister,
@@ -90,6 +91,15 @@ router.put("/Notice/:id", updateNotice)
 router.post('/ComplainCreate', complainCreate);
 
 router.get('/ComplainList/:id', complainList);
+
+// Parent routes
+router.post('/ParentReg', parentRegister);
+router.post('/ParentLogin', parentLogin);
+router.get('/Parents/:adminId', getParents);
+router.get('/Parent/:parentId', getParentDetail);
+router.put('/Parent/:parentId', updateParent);
+router.delete('/Parent/:parentId', deleteParent);
+router.get('/students/parent/:parentId', getParentStudents);
 
 // Sclass
 
