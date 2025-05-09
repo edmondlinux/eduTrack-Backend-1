@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const Parent = require('../models/parentSchema.js');
 const Student = require('../models/studentSchema');
+const Admin = require('../models/adminSchema');
 
 const parentRegister = async (req, res) => {
     try {
