@@ -100,6 +100,8 @@ router.get('/Parent/:parentId', getParentDetail);
 router.put('/Parent/:parentId', updateParent);
 router.delete('/Parent/:parentId', deleteParent);
 router.get('/students/parent/:parentId', getParentStudents);
+
+const Student = require('../models/studentSchema');
 router.get('/attendance/student/:studentId', async (req, res) => {
     try {
         const student = await Student.findById(req.params.studentId)
