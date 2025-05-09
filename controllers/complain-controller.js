@@ -14,14 +14,22 @@ const complainCreate = async (req, res) => {
 const complainList = async (req, res) => {
     try {
         let complains = await Complain.find({ school: req.params.id })
-            .populate('user', 'name rollNum');
+            .populate({
+                path: 'user',
+                model: 'Student',
+                select: 'name rollNum'
+            })
+            .lean();
+        
+        console.log('Raw complains:', complains); // Debug log
+        
         if (complains.length > 0) {
             res.send(complains)
         } else {
             res.send({ message: "No complains found" });
         }
     } catch (err) {
-        console.error(err);
+        console.error('Populate error:', err);
         res.status(500).json({ message: err.message });
     }
 };
