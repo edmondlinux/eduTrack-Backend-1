@@ -18,7 +18,11 @@ const complainList = async (req, res) => {
                 path: 'user',
                 select: 'name rollNum',
                 model: 'Student'
-            });
+            })
+            .lean() // Convert to plain JavaScript object
+            .exec(); // Execute the query
+        
+        console.log('Fetched complains:', complains); // Debug log
         if (complains.length > 0) {
             res.send(complains)
         } else {
