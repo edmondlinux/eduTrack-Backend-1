@@ -33,7 +33,7 @@ const updateNotice = async (req, res) => {
             { new: true })
         res.send(result)
     } catch (error) {
-        res.status(500).json(error);
+        res.status(500).json({ message: error.message || "An error occurred" });
     }
 }
 

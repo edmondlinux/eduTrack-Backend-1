@@ -1,4 +1,3 @@
-
 const bcrypt = require('bcrypt');
 const Parent = require('../models/parentSchema.js');
 const Student = require('../models/studentSchema.js');
@@ -18,7 +17,7 @@ const parentRegister = async (req, res) => {
         result.password = undefined;
         res.send({ message: "Parent registered successfully" });
     } catch (err) {
-        res.status(500).json(err);
+        res.status(500).json({ message: err.message || "An error occurred while processing your request" });
     }
 };
 
@@ -26,7 +25,7 @@ const parentLogin = async (req, res) => {
     try {
         let parent = await Parent.findOne({ email: req.body.email })
             .populate('school', 'schoolName');
-        
+
         if (parent) {
             const validated = await bcrypt.compare(req.body.password, parent.password);
             if (validated) {
@@ -39,7 +38,7 @@ const parentLogin = async (req, res) => {
             res.status(404).send({ message: "Parent not found" });
         }
     } catch (err) {
-        res.status(500).json(err);
+        res.status(500).json({ message: err.message || "An error occurred while processing your request" });
     }
 };
 
@@ -52,7 +51,7 @@ const getParents = async (req, res) => {
             });
         res.send(parents);
     } catch (err) {
-        res.status(500).json(err);
+        res.status(500).json({ message: err.message || "An error occurred while processing your request" });
     }
 };
 
@@ -75,7 +74,7 @@ const getParentDetail = async (req, res) => {
             res.status(404).send({ message: "Parent not found" });
         }
     } catch (err) {
-        res.status(500).json(err);
+        res.status(500).json({ message: err.message || "An error occurred while processing your request" });
     }
 };
 
@@ -102,7 +101,7 @@ const updateParent = async (req, res) => {
         );
         res.send({ message: "Parent updated successfully" });
     } catch (err) {
-        res.status(500).json(err);
+        res.status(500).json({ message: err.message || "An error occurred while processing your request" });
     }
 };
 
@@ -111,7 +110,7 @@ const deleteParent = async (req, res) => {
         await Parent.findByIdAndDelete(req.params.parentId);
         res.send({ message: "Parent deleted successfully" });
     } catch (err) {
-        res.status(500).json(err);
+        res.status(500).json({ message: err.message || "An error occurred while processing your request" });
     }
 };
 
@@ -127,7 +126,7 @@ const getParentStudents = async (req, res) => {
         }
         res.send(parent.students);
     } catch (err) {
-        res.status(500).json(err);
+        res.status(500).json({ message: err.message || "An error occurred while processing your request" });
     }
 };
 
