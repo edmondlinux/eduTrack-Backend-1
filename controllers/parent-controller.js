@@ -25,21 +25,13 @@ const parentRegister = async (req, res) => {
 const parentLogin = async (req, res) => {
     try {
         let parent = await Parent.findOne({ email: req.body.email })
-            .populate('school', 'schoolName email');
+            .populate('school', 'schoolName', );
 
         if (parent) {
             const validated = await bcrypt.compare(req.body.password, parent.password);
             if (validated) {
                 parent.password = undefined;
-                res.send({ 
-                    role: "Parent",
-                    school: {
-                        _id: parent.school._id,
-                        schoolName: parent.school.schoolName,
-                        email: parent.school.email
-                    },
-                    ...parent._doc 
-                });
+                res.send({ role: "Parent", ...parent._doc });
             } else {
                 res.status(401).send({ message: "Invalid password" });
             }
