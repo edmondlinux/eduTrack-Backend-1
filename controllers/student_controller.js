@@ -89,58 +89,15 @@ const getStudentDetail = async (req, res) => {
             .populate("sclassName", "sclassName")
             .populate("examResult.subName", "subName")
             .populate("attendance.subName", "subName sessions");
-        
         if (student) {
             student.password = undefined;
-            
-            // Calculate attendance statistics
-            const attendanceBySubject = {};
-            student.attendance.forEach(record => {
-                const subjectName = record.subName?.subName || 'Unknown Subject';
-                if (!attendanceBySubject[subjectName]) {
-                    attendanceBySubject[subjectName] = {
-                        total: 0,
-                        present: 0,
-                        absent: 0,
-                        percentage: 0
-                    };
-                }
-                attendanceBySubject[subjectName].total++;
-                if (record.status === 'Present') attendanceBySubject[subjectName].present++;
-                if (record.status === 'Absent') attendanceBySubject[subjectName].absent++;
-            });
-
-            // Calculate percentages
-            Object.values(attendanceBySubject).forEach(stats => {
-                stats.percentage = (stats.present / stats.total * 100).toFixed(1);
-            });
-
-            // Organize exam results
-            const organizedExamResults = student.examResult.reduce((acc, result) => {
-                const subjectName = result.subName?.subName || 'Unknown Subject';
-                acc[subjectName] = result.marksObtained;
-                return acc;
-            }, {});
-
-            res.send({
-                ...student.toObject(),
-                statistics: {
-                    attendance: attendanceBySubject,
-                    examResults: organizedExamResults,
-                    overallAttendance: {
-                        total: student.attendance.length,
-                        present: student.attendance.filter(a => a.status === 'Present').length,
-                        absent: student.attendance.filter(a => a.status === 'Absent').length,
-                        percentage: ((student.attendance.filter(a => a.status === 'Present').length / 
-                                   student.attendance.length) * 100).toFixed(1)
-                    }
-                }
-            });
-        } else {
-            res.status(404).send({ message: "No student found" });
+            res.send(student);
+        }
+        else {
+            res.send({ message: "No student found" });
         }
     } catch (err) {
-        res.status(500).json({ message: err.message || "An error occurred while processing your request" });
+        res.status(500).json(err);
     }
 }
 
