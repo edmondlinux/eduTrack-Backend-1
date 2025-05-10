@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const Student = require('../models/studentSchema');
 const Subject = require('../models/subjectSchema.js');
+const Admin = require('../models/adminSchema.js');
 
 const studentRegister = async (req, res) => {
     try {
@@ -35,7 +36,15 @@ const studentRegister = async (req, res) => {
 
 const studentLogIn = async (req, res) => {
     try {
-        let student = await Student.findOne({ rollNum: req.body.rollNum, name: req.body.studentName });
+        if (!req.body.rollNum || !req.body.studentName || !req.body.password) {
+            return res.status(400).json({ message: "All fields are required" });
+        }
+
+        let student = await Student.findOne({ 
+            rollNum: req.body.rollNum,
+            name: req.body.studentName 
+        });
+        
         if (student) {
             const validated = await bcrypt.compare(req.body.password, student.password);
             if (validated) {
@@ -46,13 +55,14 @@ const studentLogIn = async (req, res) => {
                 student.attendance = undefined;
                 res.send(student);
             } else {
-                res.send({ message: "Invalid password" });
+                res.status(401).send({ message: "Invalid password" });
             }
         } else {
-            res.send({ message: "Student not found" });
+            res.status(404).send({ message: "Student not found" });
         }
     } catch (err) {
-        res.status(500).json(err);
+        console.error("Student login error:", err);
+        res.status(500).json({ message: "Internal server error", error: err.message });
     }
 };
 
