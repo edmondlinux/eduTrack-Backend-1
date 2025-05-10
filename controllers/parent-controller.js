@@ -33,7 +33,11 @@ const parentLogin = async (req, res) => {
                 parent.password = undefined;
                 res.send({ 
                     role: "Parent",
-                    adminEmail: parent.school.email,
+                    school: {
+                        _id: parent.school._id,
+                        schoolName: parent.school.schoolName,
+                        email: parent.school.email
+                    },
                     ...parent._doc 
                 });
             } else {
