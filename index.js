@@ -4,17 +4,6 @@ const mongoose = require("mongoose")
 const dotenv = require("dotenv")
 // const bodyParser = require("body-parser")
 const app = express()
-
-// Import all models
-require('./models/adminSchema')
-require('./models/sclassSchema')
-require('./models/studentSchema')
-require('./models/teacherSchema')
-require('./models/subjectSchema')
-require('./models/noticeSchema')
-require('./models/complainSchema')
-require('./models/parentSchema')
-
 const Routes = require("./routes/route.js")
 
 const PORT = process.env.PORT || 5000
