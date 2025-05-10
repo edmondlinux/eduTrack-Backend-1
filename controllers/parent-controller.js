@@ -63,14 +63,38 @@ const getParentDetail = async (req, res) => {
             .populate({
                 path: 'students',
                 select: 'name rollNum sclassName attendance examResult',
-                populate: {
+                populate: [{
                     path: 'sclassName',
                     select: 'sclassName'
-                }
+                }, {
+                    path: 'examResult.subName',
+                    select: 'subName'
+                }]
             });
         if (parent) {
             parent.password = undefined;
-            res.send(parent);
+            
+            // Restructure student data for better frontend display
+            const restructuredStudents = parent.students.map(student => ({
+                id: student._id,
+                name: student.name,
+                rollNum: student.rollNum,
+                class: student.sclassName?.sclassName || 'Not Assigned',
+                examResults: student.examResult.map(result => ({
+                    subject: result.subName?.subName || 'Unknown Subject',
+                    marks: result.marksObtained
+                })),
+                attendanceStats: {
+                    total: student.attendance.length,
+                    present: student.attendance.filter(a => a.status === 'Present').length,
+                    absent: student.attendance.filter(a => a.status === 'Absent').length
+                }
+            }));
+
+            res.send({
+                ...parent.toObject(),
+                students: restructuredStudents
+            });
         } else {
             res.status(404).send({ message: "Parent not found" });
         }
