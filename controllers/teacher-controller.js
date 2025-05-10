@@ -28,6 +28,10 @@ const teacherRegister = async (req, res) => {
 
 const teacherLogIn = async (req, res) => {
     try {
+        if (!req.body.email || !req.body.password) {
+            return res.status(400).json({ message: "Email and password are required" });
+        }
+
         let teacher = await Teacher.findOne({ email: req.body.email });
         if (teacher) {
             const validated = await bcrypt.compare(req.body.password, teacher.password);
@@ -38,13 +42,14 @@ const teacherLogIn = async (req, res) => {
                 teacher.password = undefined;
                 res.send(teacher);
             } else {
-                res.send({ message: "Invalid password" });
+                res.status(401).json({ message: "Invalid password" });
             }
         } else {
-            res.send({ message: "Teacher not found" });
+            res.status(404).json({ message: "Teacher not found" });
         }
     } catch (err) {
-        res.status(500).json(err);
+        console.error("Teacher login error:", err);
+        res.status(500).json({ message: "Internal server error", error: err.message });
     }
 };
 
