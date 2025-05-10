@@ -25,7 +25,7 @@ const parentRegister = async (req, res) => {
 const parentLogin = async (req, res) => {
     try {
         let parent = await Parent.findOne({ email: req.body.email })
-            .populate('school', 'schoolName',  'email');
+            .populate('school', 'schoolName', );
 
         if (parent) {
             const validated = await bcrypt.compare(req.body.password, parent.password);
